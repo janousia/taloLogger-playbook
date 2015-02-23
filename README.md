@@ -1,6 +1,6 @@
 # taloLogger-playbook
 Ansible playbook for installing olammi's taloLogger and configuring data sources.
-Development and testing done on vanilla Debian squeeze running on Sun Netra T105.
+Tested to work on Debian squeeze (SPARC) with latest ansible available from pip.
 
 Implemented:
  - Download of taloLogger packages
