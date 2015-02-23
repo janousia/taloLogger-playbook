@@ -6,11 +6,11 @@ Implemented:
  - Download of taloLogger packages
  - Installation of (MySQL) datastore
  - Installation of taloLogger
- - Configure uptime data source
+ - Configuring of uptime data source
 
 To-do:
  - Installation of taloLoggerGraph
  - Installation of other datastores
- - Configure other data sources
+ - Configuring of other data sources
  - sudo
- - Role instead of playbook?
+ - Partition to role(s) instead of single playbook
