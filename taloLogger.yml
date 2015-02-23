@@ -73,13 +73,13 @@
         regexp=^#@DATASOURCE=SHELL:SHELL1
         line=@DATASOURCE=SHELL:SHELL1
 
-    - name: Uncomment dummy datasource in taloLogger.conf
+    - name: Comment out dummy datasource in taloLogger.conf
       lineinfile:
         dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
         regexp=^@DATASOURCE=DUMMY:DUMMY
         line=#@DATASOURCE=DUMMY:DUMMY
 
-    - name: Uncomment dummy measurement in taloLogger.conf
+    - name: Comment out dummy measurement in taloLogger.conf
       lineinfile:
         dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
         regexp="^@MEASURE = dummy:DUMMY.AnyDummyValue"
