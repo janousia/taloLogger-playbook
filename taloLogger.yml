@@ -26,7 +26,7 @@
     - name: Unzip taloLogger installation package
       unarchive: src={{ tl_target_dir }}/{{ tl_package }} dest={{ tl_target_dir }} creates={{ tl_target_dir }}/taloLogger copy=no
 
-    - name: Set MySQL root password
+    - name: Insert MySQL root password to debconf configuration
       debconf:
         name: 'mysql-server'
         question: "{{ item }}"
@@ -58,30 +58,30 @@
     - name: Add MySQL as datastore in taloLogger.conf
       lineinfile:
         dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-        regexp=^#@DATASTORE=MYSQLDB:MYSQLDB
-        line=@DATASTORE=MYSQLDB:MYSQLDB
+        regexp='^#?@DATASTORE=MYSQLDB:MYSQLDB'
+        line='@DATASTORE=MYSQLDB:MYSQLDB'
 
     - name: Add uptime datasource to taloLogger.conf
       lineinfile: 
         dest={{ tl_target_dir }}/taloLogger/taloLogger.conf 
-        regexp=^#@DATASOURCE=SHELL:SHELL1
-        line=@DATASOURCE=SHELL:SHELL1
+        regexp='^#?@DATASOURCE=SHELL:SHELL1'
+        line='@DATASOURCE=SHELL:SHELL1'
 
     - name: Comment out dummy datasource in taloLogger.conf
       lineinfile:
         dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-        regexp=^@DATASOURCE=DUMMY:DUMMY
-        line=#@DATASOURCE=DUMMY:DUMMY
+        regexp='^#?@DATASOURCE=DUMMY:DUMMY'
+        line='#@DATASOURCE=DUMMY:DUMMY'
 
     - name: Comment out dummy measurement in taloLogger.conf
       lineinfile:
         dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-        regexp="^@MEASURE = dummy:DUMMY.AnyDummyValue"
-        line="#@MEASURE = dummy:DUMMY.AnyDummyValue"
+        regexp='^#?@MEASURE = dummy:DUMMY.AnyDummyValue'
+        line='#@MEASURE = dummy:DUMMY.AnyDummyValue'
 
     - name: Add uptime load measurement in taloLogger.conf
       lineinfile:
         dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-        regexp="^# @MEASURE = systemload:SHELL1.value"
-        line="@MEASURE = systemload:SHELL1.value"
+        regexp='^#?\s?@MEASURE = systemload:SHELL1.value'
+        line='@MEASURE = systemload:SHELL1.value'
 
