@@ -2,14 +2,6 @@
 - hosts: all
   remote_user: root
   tasks:
-    - name: Update apt cache if older than 1d
-      apt: update_cache=yes cache_valid_time=86400
-      
-    - name: Ensure unzip is present
-      apt: pkg=unzip state=present
-
-    - name: Ensure python-mysqldb is present
-      apt: pkg=python-mysqldb state=present
 
     - name: Ensure taloLogger target dir exists and has proper permissions
       file: dest={{ tl_target_dir }} state=directory owner={{ tl_dir_owner }} mode=0755
@@ -20,11 +12,41 @@
     - name: Retrieve taloLogger installation package
       get_url: url={{ tl_download_URL }}/{{ tl_package }} dest={{ tl_target_dir }}
 
+    - name: Unzip taloLogger installation package
+      unarchive: src={{ tl_target_dir }}/{{ tl_package }} dest={{ tl_target_dir }} creates={{ tl_target_dir }}/taloLogger copy=no
+
+    - name: Ensure taloLoggerGraph target subdir exists and has proper permissions
+      file: dest={{ tlg_target_subdir }} state=directory owner={{ tlg_dir_owner }} mode=0755
+
+    - name: Ensure taloLoggerGraph target dir exists and has proper permissions
+      file: dest={{ tlg_target_dir }} state=directory owner={{ tlg_dir_owner }} mode=0755
+
+    - name: Ensure taloLoggerGraph execution dir exists and has proper permissions
+      file: dest={{ tlg_target_subdir }}/log state=directory owner={{ tlg_dir_owner }} mode=0755
+
     - name: Retrieve taloLoggerGraph installation package
       get_url: url={{ tl_graph_download_URL }}/{{ tl_graph_package }} dest={{ tl_target_dir }}
 
-    - name: Unzip taloLogger installation package
-      unarchive: src={{ tl_target_dir }}/{{ tl_package }} dest={{ tl_target_dir }} creates={{ tl_target_dir }}/taloLogger copy=no
+    - name: Unzip taloLoggerGraph installation package
+      unarchive: src={{ tl_target_dir }}/{{ tl_graph_package }} dest={{ tlg_target_dir }} copy=no
+
+    - name: Copy index.php
+      copy: src={{ tlg_target_dir }}/taloLoggerGraph/index.php dest={{ tlg_target_subdir }}/log owner={{ tlg_dir_owner }} group={{ tlg_dir_owner }} mode=0755
+
+    - name: Copy taloLoggerGraph.conf
+      copy: src={{ tlg_target_dir }}/taloLoggerGraph/taloLoggerGraph.conf dest={{ tlg_target_subdir }}/log owner={{ tlg_dir_owner }} group={{ tlg_dir_owner }} mode=0755
+
+    - name: Create symlink to getchart.php
+      file: src={{ tlg_target_dir }}/taloLoggerGraph/taloLoggerGraph_getchart.php dest={{ tlg_target_subdir }}/log/taloLoggerGraph_getchart.php state=link
+
+    - name: Install dependencies
+      apt: pkg={{ item }} state=present update_cache=yes cache_valid_time=86400
+      with_items: 
+        - apache2
+        - php5
+        - libapache2-mod-php5
+        - unzip
+        - python-mysqldb
 
     - name: Insert MySQL root password to debconf configuration
       debconf:
@@ -55,7 +77,7 @@
         login_password="{{ MYSQL_ROOT_PASS }}"
         name=talo state=present
 
-    - name: Add MySQL as datastore in taloLogger.conf
+    - name: Add MySQL datastore to taloLogger.conf
       lineinfile:
         dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
         regexp='^#?@DATASTORE=MYSQLDB:MYSQLDB'
