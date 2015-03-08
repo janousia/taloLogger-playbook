@@ -106,8 +106,14 @@
     - name: Add uptime load measurement in taloLogger.conf
       lineinfile:
         dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-        regexp='^#?\s?@MEASURE = systemload:SHELL1.value'
-        line='@MEASURE = systemload:SHELL1.value'
+        regexp='@?SHELL1:REGEXP'
+        line='SHELL1:REGEXP = ^.*load\saverage:\s*(?P<load>[0-9\.]+)\s*,.*$'
+
+    - name: Comment out extra uptime regex for now
+      lineinfile:
+        dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
+        regexp='^#?@SHELL1:REGEXP'
+        line='#'
 
     - name: Set datastore as MYSQL in taloLoggerGraph.conf
       lineinfile:
