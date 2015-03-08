@@ -47,6 +47,8 @@
         - libapache2-mod-php5
         - unzip
         - python-mysqldb
+        - php5-mysql
+        - libphp-jpgraph
 
     - name: Insert MySQL root password to debconf configuration
       debconf:
@@ -89,17 +91,17 @@
         regexp='^#?@DATASOURCE=SHELL:SHELL1'
         line='@DATASOURCE=SHELL:SHELL1'
 
-    - name: Comment out dummy datasource in taloLogger.conf
-      lineinfile:
-        dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-        regexp='^#?@DATASOURCE=DUMMY:DUMMY'
-        line='#@DATASOURCE=DUMMY:DUMMY'
+#    - name: Comment out dummy datasource in taloLogger.conf
+#      lineinfile:
+#        dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
+#        regexp='^#?@DATASOURCE=DUMMY:DUMMY'
+#        line='#@DATASOURCE=DUMMY:DUMMY'
 
-    - name: Comment out dummy measurement in taloLogger.conf
-      lineinfile:
-        dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-        regexp='^#?@MEASURE = dummy:DUMMY.AnyDummyValue'
-        line='#@MEASURE = dummy:DUMMY.AnyDummyValue'
+#    - name: Comment out dummy measurement in taloLogger.conf
+#      lineinfile:
+#        dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
+#        regexp='^#?@MEASURE = dummy:DUMMY.AnyDummyValue'
+#        line='#@MEASURE = dummy:DUMMY.AnyDummyValue'
 
     - name: Add uptime load measurement in taloLogger.conf
       lineinfile:
@@ -107,3 +109,37 @@
         regexp='^#?\s?@MEASURE = systemload:SHELL1.value'
         line='@MEASURE = systemload:SHELL1.value'
 
+    - name: Set datastore as MYSQL in taloLoggerGraph.conf
+      lineinfile:
+        dest={{ tlg_target_subdir }}/log/taloLoggerGraph.conf
+        regexp='^DB_TYPE'
+        line='DB_TYPE = MYSQL'
+
+    - name: Enable JavaScript charts in taloLoggerGraph.conf
+      lineinfile:
+        dest={{ tlg_target_subdir }}/log/taloLoggerGraph.conf
+        regexp='^JAVASCRIPT_CHARTS'
+        line='JAVASCRIPT_CHARTS = true'
+
+    - name: Set permissions for web directory
+      shell: chown -R www-data {{ tlg_target_subdir }}
+
+    - name: Add Apache2 configuration
+      template:
+        src=templates/talo.conf.j2
+        dest=/etc/apache2/sites-available/talo
+        owner=root
+        group=root
+        mode=0644
+
+    - name: Disable the default site
+      command: a2dissite default
+
+    - name: Enable talo virtualhost
+      command: a2ensite talo
+      notify:
+        - restart httpd
+
+  handlers:
+    - name: restart httpd
+      service: name=apache2 state=restarted
