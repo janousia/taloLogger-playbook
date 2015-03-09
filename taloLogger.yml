@@ -91,28 +91,10 @@
         regexp='^#?@DATASOURCE=SHELL:SHELL1'
         line='@DATASOURCE=SHELL:SHELL1'
 
-#    - name: Comment out dummy datasource in taloLogger.conf
-#      lineinfile:
-#        dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-#        regexp='^#?@DATASOURCE=DUMMY:DUMMY'
-#        line='#@DATASOURCE=DUMMY:DUMMY'
-
-#    - name: Comment out dummy measurement in taloLogger.conf
-#      lineinfile:
-#        dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-#        regexp='^#?@MEASURE = dummy:DUMMY.AnyDummyValue'
-#        line='#@MEASURE = dummy:DUMMY.AnyDummyValue'
-
-    - name: Add uptime load measurement in taloLogger.conf
+    - name: Comment out extra uptime regex
       lineinfile:
         dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-        regexp='@?SHELL1:REGEXP'
-        line='SHELL1:REGEXP = ^.*load\saverage:\s*(?P<load>[0-9\.]+)\s*,.*$'
-
-    - name: Comment out extra uptime regex for now
-      lineinfile:
-        dest={{ tl_target_dir }}/taloLogger/taloLogger.conf
-        regexp='^#?@SHELL1:REGEXP'
+        regexp='susers'
         line='#'
 
     - name: Set datastore as MYSQL in taloLoggerGraph.conf
@@ -127,8 +109,14 @@
         regexp='^JAVASCRIPT_CHARTS'
         line='JAVASCRIPT_CHARTS = true'
 
+    - name: Set static path for example image
+      lineinfile:
+        dest={{ tlg_target_subdir }}/log/taloLoggerGraph.conf
+        regexp='^BACKGROUND'
+        line='BACKGROUND = {{ tlg_target_dir }}/taloLoggerGraph/docs/ghp_process.png'
+
     - name: Set permissions for web directory
-      shell: chown -R www-data {{ tlg_target_subdir }}
+      shell: 'chown -R www-data:www-data {{ tlg_target_subdir }}'
 
     - name: Add Apache2 configuration
       template:
