@@ -134,6 +134,13 @@
       notify:
         - restart httpd
 
+    - name: Change Rego serial port
+      lineinfile: 
+        dest={{ tl_target_dir }}/taloLogger/taloLogger.conf 
+        regexp='^REGO:SERIAL_PORT = /dev/ttyS[0-1]'
+        line='REGO:SERIAL_PORT = /dev/ttyS1'
+      tags: test
+
   handlers:
     - name: restart httpd
       service: name=apache2 state=restarted
