@@ -10,6 +10,7 @@ https://github.com/janousia/taloLogger-role
 # Usage
 
 1) Set up inventory.txt host(s) and related connectivity (e.g. ssh keys)
+
 2) Install role dependencies 
 
 `
