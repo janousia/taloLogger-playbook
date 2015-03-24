@@ -3,13 +3,13 @@
 Ansible playbook for installing olammi's taloLogger and configuring data sources.
 Tested to work on Debian squeeze (SPARC) with latest ansible available from pip.
 
-#Role dependencies:
+# Dependencies:
 
-https://github.com/janousia/taloLogger-role
+- https://github.com/janousia/taloLogger-role
 
 # Usage
 
-1) Set up inventory.txt host(s) and related connectivity (e.g. ssh keys)
+1) Add inventory.txt host(s) and set up related connectivity (e.g. ssh keys + passwordless sudo)
 
 2) Install role dependencies 
 
