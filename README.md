@@ -9,7 +9,8 @@ Tested to work on Debian squeeze (SPARC) with latest ansible available from pip.
 
 # Usage
 
-1) Add inventory.txt host(s) and set up related connectivity (e.g. ssh keys + passwordless sudo)
+1) Add host(s) to inventory.txt. Example uses local connection and presumes
+   passwordless sudo. For remote target(s) you also need to set up ssh keys.
 
 2) Install role dependencies 
 
@@ -20,5 +21,5 @@ ansible-galaxy install -r requirements.yml
 3) Run playbook (overriding role variables where necessary)
 
 `
-ansible-playbook -i inventory.txt taloLogger.yml -e MYSQL_ROOT_PASS=non_default
+ansible-playbook -i inventory.txt taloLogger.yml -e MYSQL_ROOT_PASS=for_installation
 `
