@@ -1,2 +1,5 @@
-- src: https://github.com/janousia/taloLogger-role.git
+- src: https://github.com/janousia/taloLogger.git
+  path: roles/
+
+- src: https://github.com/janousia/taloLoggerGraph.git
   path: roles/

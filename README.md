@@ -1,7 +1,8 @@
 # taloLogger-playbook
 
 Ansible playbook for installing olammi's taloLogger and configuring data sources.
-Tested to work on Debian squeeze (SPARC) with latest ansible available from pip.
+Tested to work on Debian squeeze (SPARC) and Raspbian (ARM) with latest ansible 
+available from pip.
 
 # Dependencies:
 
@@ -18,8 +19,8 @@ Tested to work on Debian squeeze (SPARC) with latest ansible available from pip.
 ansible-galaxy install -r requirements.yml
 `
 
-3) Run playbook (overriding role variables where necessary)
+3) Run playbook
 
 `
-ansible-playbook -i inventory.txt taloLogger.yml -e MYSQL_ROOT_PASS=for_installation
+ansible-playbook -i inventory.txt taloLogger.yml
 `
