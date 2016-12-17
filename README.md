@@ -10,9 +10,7 @@ available from pip.
 
 # Usage
 
-1) Add host(s) to inventory.txt. Example uses local connection and presumes
-   passwordless sudo. For remote target(s) you also need to set up ssh keys.
-
+1) Add host(s) to inventory.txt
 2) Install role dependencies 
 
 `
