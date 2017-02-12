@@ -1,0 +1,6 @@
+---
+- hosts: all
+  sudo: yes
+  roles:
+    - taloLogger
+    - { role: taloLoggerGraph, when: 'db_only == "false"' }
